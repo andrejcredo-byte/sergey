@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile in the application.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["owner", "admin", "manager", "accountant", "partner", "worker"] },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "avatar": { "type": "string" },
+        "specialization": { "type": "string" }
+      },
+      "required": ["id", "name", "role"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "A construction/renovation project.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "ownerId": { "type": "string", "description": "The UID of the user who owns the project" },
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "description": { "type": "string" },
+        "clientName": { "type": "string" },
+        "clientPhone": { "type": "string" },
+        "startDate": { "type": "string" },
+        "deadline": { "type": "string" },
+        "status": { "type": "string" },
+        "progress": { "type": "number" },
+        "estimatedBudget": { "type": "number" },
+        "totalIncome": { "type": "number" },
+        "totalExpense": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "teamIds": { "type": "array", "items": { "type": "string" }, "description": "List of user IDs assigned to this project" },
+        "stages": { "type": "array" },
+        "documents": { "type": "array" }
+      },
+      "required": ["id", "ownerId", "name", "address", "createdAt"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "A financial transaction related to a project.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "projectId": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["income", "expense"] },
+        "category": { "type": "string" },
+        "date": { "type": "string" },
+        "description": { "type": "string" },
+        "workerId": { "type": "string" }
+      },
+      "required": ["id", "projectId", "ownerId", "amount", "type", "date"]
+    },
+    "Material": {
+      "title": "Material",
+      "description": "A material used in a project.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "projectId": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string" },
+        "pricePerUnit": { "type": "number" },
+        "totalPrice": { "type": "number" },
+        "status": { "type": "string" },
+        "supplier": { "type": "string" },
+        "purchaseDate": { "type": "string" },
+        "buyerId": { "type": "string" }
+      },
+      "required": ["id", "projectId", "ownerId", "name", "quantity", "unit", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles. Anyone can read their own profile."
+    },
+    "/projects/{projectId}": {
+      "schema": { "$ref": "#/entities/Project" },
+      "description": "Projects."
+    },
+    "/projects/{projectId}/transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/Transaction" },
+      "description": "Transactions belong to a project."
+    },
+    "/projects/{projectId}/materials/{materialId}": {
+      "schema": { "$ref": "#/entities/Material" },
+      "description": "Materials belong to a project."
+    }
+  }
+}

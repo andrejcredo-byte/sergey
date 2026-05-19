@@ -1,0 +1,137 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Primitive Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    function incoming() {
+      return request.resource.data;
+    }
+    
+    function existing() {
+      return resource.data;
+    }
+
+    // Entity Validators
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'name', 'role']) &&
+             data.id is string && data.id.size() <= 128 &&
+             data.name is string && data.name.size() <= 128 &&
+             data.role is string && data.role in ['owner', 'admin', 'manager', 'accountant', 'partner', 'worker'];
+    }
+
+    function isValidProject(data) {
+      return data.keys().hasAll(['id', 'ownerId', 'name', 'address', 'createdAt']) &&
+             data.id is string && data.id.size() <= 128 &&
+             data.ownerId == request.auth.uid &&
+             data.name is string && data.name.size() <= 200 &&
+             data.address is string && data.address.size() <= 300 &&
+             data.createdAt is string && data.createdAt.size() <= 64;
+    }
+
+    function isValidTransaction(data) {
+      return data.keys().hasAll(['id', 'projectId', 'ownerId', 'amount', 'type', 'date']) &&
+             data.id is string && data.id.size() <= 128 &&
+             data.projectId is string && data.projectId.size() <= 128 &&
+             data.ownerId == request.auth.uid &&
+             data.amount is number &&
+             data.type is string && data.type in ['income', 'expense'] &&
+             data.date is string && data.date.size() <= 64;
+    }
+
+    function isValidMaterial(data) {
+      return data.keys().hasAll(['id', 'projectId', 'ownerId', 'name', 'quantity', 'unit', 'status']) &&
+             data.id is string && data.id.size() <= 128 &&
+             data.projectId is string && data.projectId.size() <= 128 &&
+             data.ownerId == request.auth.uid &&
+             data.name is string && data.name.size() <= 200 &&
+             data.quantity is number &&
+             data.unit is string && data.unit.size() <= 64 &&
+             data.status is string && data.status.size() <= 64;
+    }
+
+    // Match Rules
+    
+    // Users
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || existing().ownerId == request.auth.uid);
+      allow list: if isSignedIn() && (resource.data.id == request.auth.uid || resource.data.ownerId == request.auth.uid);
+      
+      allow create: if isSignedIn() && isValidId(userId) && 
+                    isValidUser(incoming()) && 
+                    (incoming().id == request.auth.uid || incoming().ownerId == request.auth.uid);
+                    
+      allow update: if isSignedIn() && isValidId(userId) && 
+                    (existing().id == request.auth.uid || existing().ownerId == request.auth.uid) &&
+                    isValidUser(incoming());
+      
+      allow delete: if isSignedIn() && isValidId(userId) && existing().ownerId == request.auth.uid;
+    }
+
+    // Projects
+    match /projects/{projectId} {
+      function isProjectOwner() {
+        return existing().ownerId == request.auth.uid;
+      }
+      
+      allow read: if isSignedIn() && isValidId(projectId) && isProjectOwner();
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      
+      allow create: if isSignedIn() && isValidId(projectId) &&
+                    isValidProject(incoming());
+                    
+      allow update: if isSignedIn() && isValidId(projectId) &&
+                    isProjectOwner() &&
+                    isValidProject(incoming()) &&
+                    incoming().ownerId == existing().ownerId &&
+                    incoming().createdAt == existing().createdAt;
+                    
+      allow delete: if isSignedIn() && isValidId(projectId) && isProjectOwner();
+    }
+
+    match /transactions/{transactionId} {
+      allow read, delete: if isSignedIn() && isValidId(transactionId) && existing().ownerId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      
+      allow create: if isSignedIn() && isValidId(transactionId) &&
+                    isValidTransaction(incoming()) &&
+                    exists(/databases/$(database)/documents/projects/$(incoming().projectId)) &&
+                    get(/databases/$(database)/documents/projects/$(incoming().projectId)).data.ownerId == request.auth.uid &&
+                    incoming().ownerId == request.auth.uid;
+                    
+      allow update: if isSignedIn() && isValidId(transactionId) &&
+                    existing().ownerId == request.auth.uid &&
+                    isValidTransaction(incoming()) &&
+                    incoming().ownerId == existing().ownerId &&
+                    incoming().projectId == existing().projectId;
+    }
+
+    match /materials/{materialId} {
+      allow read, delete: if isSignedIn() && isValidId(materialId) && existing().ownerId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      
+      allow create: if isSignedIn() && isValidId(materialId) &&
+                    isValidMaterial(incoming()) &&
+                    exists(/databases/$(database)/documents/projects/$(incoming().projectId)) &&
+                    get(/databases/$(database)/documents/projects/$(incoming().projectId)).data.ownerId == request.auth.uid &&
+                    incoming().ownerId == request.auth.uid;
+                    
+      allow update: if isSignedIn() && isValidId(materialId) &&
+                    existing().ownerId == request.auth.uid &&
+                    isValidMaterial(incoming()) &&
+                    incoming().ownerId == existing().ownerId &&
+                    incoming().projectId == existing().projectId;
+    }
+  }
+}
