@@ -37,11 +37,11 @@ export function Projects() {
             <table className="w-full text-sm text-left">
               <thead className="bg-zinc-50 text-zinc-500 font-medium border-b">
                 <tr>
-                  <th className="px-6 py-3">Объект</th>
-                  <th className="px-6 py-3 text-right">Бюджет</th>
-                  <th className="px-6 py-3 text-right">Прибыль</th>
-                  <th className="px-6 py-3">Статус</th>
-                  <th className="px-6 py-3">Дедлайн</th>
+                  <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Объект</th>
+                  <th className="px-4 sm:px-6 py-3 text-right whitespace-nowrap">Бюджет</th>
+                  <th className="px-4 sm:px-6 py-3 text-right whitespace-nowrap">Прибыль</th>
+                  <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Статус</th>
+                  <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Дедлайн</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100">
@@ -57,18 +57,18 @@ export function Projects() {
                     className="hover:bg-zinc-50/50 cursor-pointer transition-colors"
                     onClick={() => navigate(`/projects/${project.id}`)}
                   >
-                    <td className="px-6 py-4">
+                    <td className="px-4 sm:px-6 py-4 min-w-[200px]">
                       <div className="font-medium text-zinc-900">{project.name}</div>
                       <div className="text-zinc-500 text-xs mt-1">{project.clientName}</div>
                     </td>
-                    <td className="px-6 py-4 text-right font-medium">{formatCurrency(project.estimatedBudget)}</td>
-                    <td className="px-6 py-4 text-right text-green-600 font-medium">{formatCurrency(income - expense)}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 sm:px-6 py-4 text-right font-medium whitespace-nowrap">{formatCurrency(project.estimatedBudget)}</td>
+                    <td className="px-4 sm:px-6 py-4 text-right text-green-600 font-medium whitespace-nowrap">{formatCurrency(income - expense)}</td>
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                       <Badge variant={PROJECT_STATUS_MAP[status]?.variant || 'default'}>
                         {PROJECT_STATUS_MAP[status]?.label || status}
                       </Badge>
                     </td>
-                    <td className={`px-6 py-4 text-zinc-500 ${status === 'overdue' ? 'text-red-500 font-medium' : ''}`}>{formatDate(project.deadline)}</td>
+                    <td className={`px-4 sm:px-6 py-4 whitespace-nowrap ${status === 'overdue' ? 'text-red-500 font-medium' : 'text-zinc-500'}`}>{formatDate(project.deadline)}</td>
                   </tr>
                 )})}
               </tbody>

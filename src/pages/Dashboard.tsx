@@ -45,12 +45,12 @@ export function Dashboard() {
 
       {/* Quick Access to Active Projects */}
       {activeProjects.length > 0 && (
-        <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+        <div className="flex gap-3 overflow-x-auto pb-4 pt-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide snap-x">
           {activeProjects.map(p => (
             <div 
               key={p.id}
               onClick={() => navigate(`/projects/${p.id}`)}
-              className="flex-none bg-white border border-zinc-200 rounded-lg p-3 w-64 hover:border-zinc-300 hover:shadow-sm cursor-pointer transition-all flex items-start gap-3 group"
+              className="flex-none bg-white border border-zinc-200 rounded-lg p-3 w-64 hover:border-zinc-300 hover:shadow-sm cursor-pointer transition-all flex items-start gap-3 group snap-start block"
             >
               <div className="p-2 bg-zinc-50 rounded-md text-zinc-500 group-hover:text-zinc-900 group-hover:bg-zinc-100 transition-colors">
                 <FolderOpen size={16} />

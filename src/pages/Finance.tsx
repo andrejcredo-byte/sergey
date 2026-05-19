@@ -24,42 +24,44 @@ export function Finance() {
         <CardHeader>
           <CardTitle>Все транзакции</CardTitle>
         </CardHeader>
-        <CardContent>
-          <table className="w-full text-sm text-left">
-            <thead className="bg-zinc-50 border-b">
-              <tr>
-                <th className="px-6 py-3">Дата</th>
-                <th className="px-6 py-3">Объект</th>
-                <th className="px-6 py-3">Категория</th>
-                <th className="px-6 py-3">Описание</th>
-                <th className="px-6 py-3 text-right">Сумма</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-100">
-              {transactions.length === 0 ? (
+        <CardContent className="p-0 sm:p-6">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-zinc-50 border-b">
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-zinc-500">
-                    <p>Пока нет транзакций</p>
-                  </td>
+                  <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Дата</th>
+                  <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Объект</th>
+                  <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Категория</th>
+                  <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Описание</th>
+                  <th className="px-4 sm:px-6 py-3 text-right whitespace-nowrap">Сумма</th>
                 </tr>
-              ) : (
-                transactions.map(t => {
-                  const project = projects.find(p => p.id === t.projectId);
-                  return (
-                    <tr key={t.id} className="hover:bg-zinc-50">
-                      <td className="px-6 py-4">{formatDate(t.date)}</td>
-                      <td className="px-6 py-4 font-medium">{project?.name}</td>
-                      <td className="px-6 py-4 text-zinc-500">{t.category ? TRANSACTION_CATEGORY_MAP[t.category] || t.category : '-'}</td>
-                      <td className="px-6 py-4 text-zinc-500">{t.description}</td>
-                      <td className={`px-6 py-4 text-right font-medium ${t.type === 'income' ? 'text-green-600' : 'text-zinc-900'}`}>
-                        {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount)}
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-zinc-100">
+                {transactions.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-4 sm:px-6 py-12 text-center text-zinc-500">
+                      <p>Пока нет транзакций</p>
+                    </td>
+                  </tr>
+                ) : (
+                  transactions.map(t => {
+                    const project = projects.find(p => p.id === t.projectId);
+                    return (
+                      <tr key={t.id} className="hover:bg-zinc-50">
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">{formatDate(t.date)}</td>
+                        <td className="px-4 sm:px-6 py-4 font-medium whitespace-nowrap">{project?.name}</td>
+                        <td className="px-4 sm:px-6 py-4 text-zinc-500 whitespace-nowrap">{t.category ? TRANSACTION_CATEGORY_MAP[t.category] || t.category : '-'}</td>
+                        <td className="px-4 sm:px-6 py-4 text-zinc-500 min-w-[200px]">{t.description}</td>
+                        <td className={`px-4 sm:px-6 py-4 text-right font-medium whitespace-nowrap ${t.type === 'income' ? 'text-green-600' : 'text-zinc-900'}`}>
+                          {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount)}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
         </CardContent>
       </Card>
     </div>

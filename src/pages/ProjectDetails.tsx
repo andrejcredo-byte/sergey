@@ -62,7 +62,7 @@ export function ProjectDetails() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b">
+      <div className="flex border-b overflow-x-auto scrollbar-hide">
         {(['overview', 'finance', 'materials', 'team'] as const).map(tab => (
           <button
             key={tab}
@@ -268,41 +268,43 @@ export function ProjectDetails() {
               <AddTransactionDialog type="income" projectId={project.id} />
             </div>
           </CardHeader>
-          <CardContent className="p-0">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-zinc-50/50 text-zinc-500 font-medium">
-                <tr>
-                  <th className="px-6 py-3">Дата</th>
-                  <th className="px-6 py-3">Описание</th>
-                  <th className="px-6 py-3">Категория</th>
-                  <th className="px-6 py-3 text-right">Сумма</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100">
-                {projectTransactions.length === 0 ? (
+          <CardContent className="p-0 sm:p-6">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-zinc-50/50 text-zinc-500 font-medium">
                   <tr>
-                    <td colSpan={4} className="px-6 py-12 text-center text-zinc-500">
-                      <p>Нет транзакций по этому объекту</p>
-                    </td>
+                    <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Дата</th>
+                    <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Описание</th>
+                    <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Категория</th>
+                    <th className="px-4 sm:px-6 py-3 text-right whitespace-nowrap">Сумма</th>
                   </tr>
-                ) : (
-                  projectTransactions.map(t => (
-                    <tr key={t.id} className="hover:bg-zinc-50/50 transition-colors">
-                      <td className="px-6 py-4 text-zinc-500">{formatDate(t.date)}</td>
-                      <td className="px-6 py-4 font-medium text-zinc-900">{t.description}</td>
-                      <td className="px-6 py-4">
-                        {t.category ? (
-                          <span className="bg-zinc-100 text-zinc-600 px-2 py-1 rounded-md text-xs">{TRANSACTION_CATEGORY_MAP[t.category] || t.category}</span>
-                        ) : '-'}
-                      </td>
-                      <td className={`px-6 py-4 text-right font-medium ${t.type === 'income' ? 'text-green-600' : 'text-zinc-900'}`}>
-                        {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount)}
+                </thead>
+                <tbody className="divide-y divide-zinc-100">
+                  {projectTransactions.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="px-4 sm:px-6 py-12 text-center text-zinc-500">
+                        <p>Нет транзакций по этому объекту</p>
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    projectTransactions.map(t => (
+                      <tr key={t.id} className="hover:bg-zinc-50/50 transition-colors">
+                        <td className="px-4 sm:px-6 py-4 text-zinc-500 whitespace-nowrap">{formatDate(t.date)}</td>
+                        <td className="px-4 sm:px-6 py-4 font-medium text-zinc-900 min-w-[200px]">{t.description}</td>
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                          {t.category ? (
+                            <span className="bg-zinc-100 text-zinc-600 px-2 py-1 rounded-md text-xs">{TRANSACTION_CATEGORY_MAP[t.category] || t.category}</span>
+                          ) : '-'}
+                        </td>
+                        <td className={`px-4 sm:px-6 py-4 text-right font-medium whitespace-nowrap ${t.type === 'income' ? 'text-green-600' : 'text-zinc-900'}`}>
+                          {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount)}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -316,67 +318,69 @@ export function ProjectDetails() {
             </div>
             <AddMaterialDialog projectId={project.id} />
           </CardHeader>
-          <CardContent className="p-0">
-            <table className="w-full text-sm text-left">
-              <thead className="text-xs text-zinc-500 bg-zinc-50 border-b border-zinc-100 uppercase">
-                <tr>
-                  <th className="px-6 py-4 font-medium">Наименование</th>
-                  <th className="px-6 py-4 font-medium">Кол-во</th>
-                  <th className="px-6 py-4 font-medium">Сумма</th>
-                  <th className="px-6 py-4 font-medium">Статус</th>
-                  <th className="px-6 py-4 font-medium">Ответственный</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100">
-                {materials.filter(m => m.projectId === project.id).length === 0 ? (
+          <CardContent className="p-0 sm:p-6">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-zinc-500 bg-zinc-50 border-b border-zinc-100 uppercase">
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-zinc-500">
-                      <p>Нет материалов по этому объекту</p>
-                    </td>
+                    <th className="px-4 sm:px-6 py-4 font-medium whitespace-nowrap">Наименование</th>
+                    <th className="px-4 sm:px-6 py-4 font-medium whitespace-nowrap">Кол-во</th>
+                    <th className="px-4 sm:px-6 py-4 font-medium whitespace-nowrap">Сумма</th>
+                    <th className="px-4 sm:px-6 py-4 font-medium whitespace-nowrap">Статус</th>
+                    <th className="px-4 sm:px-6 py-4 font-medium whitespace-nowrap">Ответственный</th>
                   </tr>
-                ) : (
-                  materials.filter(m => m.projectId === project.id).map(m => {
-                    const buyer = users.find(u => u.id === m.buyerId);
-                    const statusInfo = MATERIAL_STATUS_MAP[m.status] || { label: m.status, variant: 'default' };
-                    return (
-                      <tr 
-                        key={m.id} 
-                        className="hover:bg-zinc-50/50 transition-colors cursor-pointer group relative"
-                        onClick={() => setEditingMaterial(m)}
-                      >
-                        <td className="px-6 py-4">
-                          <div className="font-medium text-zinc-900">{m.name}</div>
-                          <div className="text-xs text-zinc-500">{m.category} {m.supplier ? `• ${m.supplier}` : ''}</div>
-                        </td>
-                        <td className="px-6 py-4">{m.quantity} {m.unit}</td>
-                        <td className="px-6 py-4 font-medium">
-                          {m.totalPrice ? formatCurrency(m.totalPrice) : '-'}
-                          {m.pricePerUnit && <div className="text-xs text-zinc-500 font-normal">{formatCurrency(m.pricePerUnit)} / {m.unit}</div>}
-                        </td>
-                        <td className="px-6 py-4">
-                          <Badge variant={statusInfo.variant as any}>{statusInfo.label}</Badge>
-                        </td>
-                        <td className="px-6 py-4 text-zinc-500 relative">
-                          <div className="pr-12">{buyer?.name || '-'}</div>
-                          <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                            <button 
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteMaterial(m.id);
-                              }}
-                              className="bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center h-8 w-8 rounded-md transition-colors border border-red-100 opacity-0 group-hover:opacity-100 transition-opacity"
-                              title="Удалить"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-zinc-100">
+                  {materials.filter(m => m.projectId === project.id).length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-4 sm:px-6 py-12 text-center text-zinc-500">
+                        <p>Нет материалов по этому объекту</p>
+                      </td>
+                    </tr>
+                  ) : (
+                    materials.filter(m => m.projectId === project.id).map(m => {
+                      const buyer = users.find(u => u.id === m.buyerId);
+                      const statusInfo = MATERIAL_STATUS_MAP[m.status] || { label: m.status, variant: 'default' };
+                      return (
+                        <tr 
+                          key={m.id} 
+                          className="hover:bg-zinc-50/50 transition-colors cursor-pointer group relative"
+                          onClick={() => setEditingMaterial(m)}
+                        >
+                          <td className="px-4 sm:px-6 py-4 min-w-[200px]">
+                            <div className="font-medium text-zinc-900">{m.name}</div>
+                            <div className="text-xs text-zinc-500">{m.category} {m.supplier ? `• ${m.supplier}` : ''}</div>
+                          </td>
+                          <td className="px-4 sm:px-6 py-4 whitespace-nowrap">{m.quantity} {m.unit}</td>
+                          <td className="px-4 sm:px-6 py-4 font-medium whitespace-nowrap">
+                            {m.totalPrice ? formatCurrency(m.totalPrice) : '-'}
+                            {m.pricePerUnit && <div className="text-xs text-zinc-500 font-normal">{formatCurrency(m.pricePerUnit)} / {m.unit}</div>}
+                          </td>
+                          <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                            <Badge variant={statusInfo.variant as any}>{statusInfo.label}</Badge>
+                          </td>
+                          <td className="px-4 sm:px-6 py-4 text-zinc-500 relative whitespace-nowrap">
+                            <div className="pr-12">{buyer?.name || '-'}</div>
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteMaterial(m.id);
+                                }}
+                                className="bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center h-8 w-8 rounded-md transition-colors border border-red-100 opacity-0 lg:group-hover:opacity-100 lg:transition-opacity"
+                                title="Удалить"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
           </CardContent>
         </Card>
       )}

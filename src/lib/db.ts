@@ -61,17 +61,17 @@ const cleanData = <T extends Record<string, any>>(obj: T): T => {
 // Write helpers
 export const saveProject = async (project: Project) => {
   const docRef = doc(db, collections.projects, project.id);
-  await setDoc(docRef, cleanData(project)); // Make sure ownerId is set
+  await setDoc(docRef, cleanData(project), { merge: true }); // Make sure ownerId is set
 };
 
 export const saveTransaction = async (transaction: Transaction) => {
   const docRef = doc(db, collections.transactions, transaction.id);
-  await setDoc(docRef, cleanData(transaction));
+  await setDoc(docRef, cleanData(transaction), { merge: true });
 };
 
 export const saveMaterial = async (material: Material) => {
   const docRef = doc(db, collections.materials, material.id);
-  await setDoc(docRef, cleanData(material));
+  await setDoc(docRef, cleanData(material), { merge: true });
 };
 
 export const deleteMaterialDoc = async (materialId: string) => {
@@ -80,7 +80,7 @@ export const deleteMaterialDoc = async (materialId: string) => {
 
 export const saveUserRecord = async (user: User) => {
   const docRef = doc(db, collections.users, user.id);
-  await setDoc(docRef, cleanData(user));
+  await setDoc(docRef, cleanData(user), { merge: true });
 };
 
 export const deleteUserRecord = async (userId: string) => {
