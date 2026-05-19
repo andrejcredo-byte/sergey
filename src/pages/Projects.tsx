@@ -1,14 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store';
-import { Badge } from '../components/ui/badge';
-import { PROJECT_STATUS_MAP } from '../lib/constants';
-import { formatCurrency, formatDate, getProjectStatus } from '../lib/utils';
 import { NewProjectDialog } from '../components/projects/NewProjectDialog';
 import { FolderOpen } from 'lucide-react';
+import { ProjectList } from '../components/projects/ProjectList';
 
 export function Projects() {
-  const navigate = useNavigate();
   const { projects, transactions } = useStore();
 
   return (
@@ -35,49 +31,10 @@ export function Projects() {
         </div>
       ) : (
         <div className="bg-white rounded-xl border overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-zinc-50 text-zinc-500 font-medium border-b">
-                <tr>
-                  <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Объект</th>
-                  <th className="px-4 sm:px-6 py-3 text-right whitespace-nowrap">Бюджет</th>
-                  <th className="px-4 sm:px-6 py-3 text-right whitespace-nowrap">Прибыль</th>
-                  <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Статус</th>
-                  <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Дедлайн</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100">
-                {projects.map(project => {
-                  const pTrans = transactions.filter(t => t.projectId === project.id);
-                  const income = pTrans.filter(t => t.type === 'income').reduce((a, b) => a + b.amount, 0);
-                  const expense = pTrans.filter(t => t.type === 'expense').reduce((a, b) => a + b.amount, 0);
-                  const status = getProjectStatus(project);
-                  
-                  return (
-                  <tr 
-                    key={project.id} 
-                    className="hover:bg-zinc-50/50 cursor-pointer transition-colors"
-                    onClick={() => navigate(`/projects/${project.id}`)}
-                  >
-                    <td className="px-4 sm:px-6 py-4 min-w-[200px]">
-                      <div className="font-medium text-zinc-900">{project.name}</div>
-                      <div className="text-zinc-500 text-xs mt-1">{project.clientName}</div>
-                    </td>
-                    <td className="px-4 sm:px-6 py-4 text-right font-medium whitespace-nowrap">{formatCurrency(project.estimatedBudget)}</td>
-                    <td className="px-4 sm:px-6 py-4 text-right text-green-600 font-medium whitespace-nowrap">{formatCurrency(income - expense)}</td>
-                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                      <Badge variant={PROJECT_STATUS_MAP[status]?.variant || 'default'}>
-                        {PROJECT_STATUS_MAP[status]?.label || status}
-                      </Badge>
-                    </td>
-                    <td className={`px-4 sm:px-6 py-4 whitespace-nowrap ${status === 'overdue' ? 'text-red-500 font-medium' : 'text-zinc-500'}`}>{formatDate(project.deadline)}</td>
-                  </tr>
-                )})}
-              </tbody>
-            </table>
-          </div>
+          <ProjectList projects={projects} transactions={transactions} />
         </div>
       )}
     </div>
   );
 }
+

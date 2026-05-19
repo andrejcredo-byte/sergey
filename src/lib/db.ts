@@ -69,6 +69,10 @@ export const saveTransaction = async (transaction: Transaction) => {
   await setDoc(docRef, cleanData(transaction), { merge: true });
 };
 
+export const deleteTransactionDoc = async (transactionId: string) => {
+  await deleteDoc(doc(db, collections.transactions, transactionId));
+};
+
 export const saveMaterial = async (material: Material) => {
   const docRef = doc(db, collections.materials, material.id);
   await setDoc(docRef, cleanData(material), { merge: true });

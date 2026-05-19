@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Project, Transaction, Material, User } from '../types';
-import { saveProject, saveTransaction, saveMaterial, deleteMaterialDoc, saveUserRecord, deleteUserRecord } from '../lib/db';
+import { saveProject, saveTransaction, deleteTransactionDoc, saveMaterial, deleteMaterialDoc, saveUserRecord, deleteUserRecord } from '../lib/db';
 
 interface StoreState {
   projects: Project[];
@@ -18,6 +18,8 @@ interface StoreState {
   addProject: (p: Project) => void;
   updateProject: (id: string, data: Partial<Project>) => void;
   addTransaction: (t: Transaction) => void;
+  updateTransaction: (id: string, data: Partial<Transaction>) => void;
+  deleteTransaction: (id: string) => void;
   addUser: (u: User) => void;
   assignWorkerToProject: (projectId: string, workerId: string) => void;
   removeWorkerFromProject: (projectId: string, workerId: string) => void;
@@ -84,6 +86,53 @@ export const useStore = create<StoreState>((set) => ({
       return { transactions: newTransactions, projects: updatedProjects };
     }
     return { transactions: newTransactions };
+  }),
+  updateTransaction: (id, data) => set((state) => {
+    const original = state.transactions.find(t => t.id === id);
+    if (!original) return {};
+
+    const updated = { ...original, ...data };
+    saveTransaction(updated).catch(console.error);
+
+    const updatedTransactions = state.transactions.map(t => t.id === id ? updated : t);
+
+    // Recalculate totals for potentially affected projects
+    const projectIdsToUpdate = Array.from(new Set([original.projectId, updated.projectId]));
+    
+    const updatedProjects = state.projects.map(p => {
+      if (projectIdsToUpdate.includes(p.id)) {
+        const projectTxs = updatedTransactions.filter(t => t.projectId === p.id);
+        const totalIncome = projectTxs.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+        const totalExpense = projectTxs.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+        
+        saveProject({ ...p, totalIncome, totalExpense }).catch(console.error);
+        return { ...p, totalIncome, totalExpense };
+      }
+      return p;
+    });
+
+    return { transactions: updatedTransactions, projects: updatedProjects };
+  }),
+  deleteTransaction: (id) => set((state) => {
+    const original = state.transactions.find(t => t.id === id);
+    if (!original) return {};
+
+    deleteTransactionDoc(id).catch(console.error);
+    const updatedTransactions = state.transactions.filter(t => t.id !== id);
+
+    const updatedProjects = state.projects.map(p => {
+      if (p.id === original.projectId) {
+        const projectTxs = updatedTransactions.filter(t => t.projectId === p.id);
+        const totalIncome = projectTxs.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+        const totalExpense = projectTxs.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+
+        saveProject({ ...p, totalIncome, totalExpense }).catch(console.error);
+        return { ...p, totalIncome, totalExpense };
+      }
+      return p;
+    });
+
+    return { transactions: updatedTransactions, projects: updatedProjects };
   }),
   addUser: (u) => set((state) => {
     let newUser = u;
