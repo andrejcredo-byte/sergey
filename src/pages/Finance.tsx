@@ -15,9 +15,9 @@ export function Finance() {
           <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Финансы</h1>
           <p className="text-sm text-zinc-500">Управление денежными потоками</p>
         </div>
-        <div className="flex gap-2">
-          <AddTransactionDialog type="expense" />
-          <AddTransactionDialog type="income" />
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <div className="flex-1"><AddTransactionDialog type="expense" /></div>
+          <div className="flex-1"><AddTransactionDialog type="income" /></div>
         </div>
       </div>
       <Card>

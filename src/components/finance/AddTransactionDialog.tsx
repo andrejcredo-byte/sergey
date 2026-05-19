@@ -79,11 +79,11 @@ export function AddTransactionDialog({ type, projectId: defaultProjectId }: Prop
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {isIncome ? (
-          <Button className="bg-zinc-900 text-white hover:bg-zinc-800">
+          <Button className="w-full bg-zinc-900 text-white hover:bg-zinc-800">
             <Plus className="mr-2 h-4 w-4" /> Добавить приход
           </Button>
         ) : (
-          <Button variant="outline" className="text-red-600 border-red-100 bg-red-50 hover:bg-red-100 hover:text-red-700">
+          <Button variant="outline" className="w-full text-red-600 border-red-100 bg-red-50 hover:bg-red-100 hover:text-red-700">
             <Plus className="mr-2 h-4 w-4" /> Добавить расход
           </Button>
         )}

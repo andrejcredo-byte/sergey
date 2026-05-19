@@ -73,7 +73,7 @@ export function AddMaterialDialog({ projectId: defaultProjectId }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-zinc-900 text-white hover:bg-zinc-800">
+        <Button className="w-full bg-zinc-900 text-white hover:bg-zinc-800">
           <Plus className="mr-2 h-4 w-4" /> Добавить материал
         </Button>
       </DialogTrigger>

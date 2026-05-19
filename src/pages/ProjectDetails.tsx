@@ -40,24 +40,26 @@ export function ProjectDetails() {
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-start sm:items-center gap-2 sm:gap-4">
         <button 
           onClick={() => navigate('/projects')}
-          className="p-2 -ml-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-md transition-colors"
+          className="p-2 -ml-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-md transition-colors shrink-0 mt-1 sm:mt-0"
         >
           <ArrowLeft size={20} />
         </button>
-        <div className="flex-1 flex justify-between items-start">
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold tracking-tight text-zinc-900">{project.name}</h1>
+        <div className="flex-1 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 min-w-0">
+          <div className="min-w-0 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 break-words">{project.name}</h1>
               <Badge variant={PROJECT_STATUS_MAP[status]?.variant || 'default'}>
                 {PROJECT_STATUS_MAP[status]?.label || status}
               </Badge>
             </div>
-            <p className="text-sm text-zinc-500 mt-1">{project.address}</p>
+            <p className="text-sm text-zinc-500 mt-1 truncate">{project.address}</p>
           </div>
-          <EditProjectDialog project={project} />
+          <div className="w-full sm:w-auto flex shrink-0">
+            <EditProjectDialog project={project} />
+          </div>
         </div>
       </div>
 
@@ -261,11 +263,11 @@ export function ProjectDetails() {
 
       {activeTab === 'finance' && (
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between border-b border-zinc-100 pb-4">
+          <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-zinc-100 pb-4">
             <CardTitle>История транзакций</CardTitle>
-            <div className="flex gap-2">
-              <AddTransactionDialog type="expense" projectId={project.id} />
-              <AddTransactionDialog type="income" projectId={project.id} />
+            <div className="flex w-full sm:w-auto gap-2 flex-wrap">
+              <div className="flex-1 min-w-[140px]"><AddTransactionDialog type="expense" projectId={project.id} /></div>
+              <div className="flex-1 min-w-[140px]"><AddTransactionDialog type="income" projectId={project.id} /></div>
             </div>
           </CardHeader>
           <CardContent className="p-0 sm:p-6">
@@ -311,12 +313,14 @@ export function ProjectDetails() {
 
       {activeTab === 'materials' && (
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between border-b border-zinc-100 pb-4">
+          <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-zinc-100 pb-4">
             <div>
               <CardTitle>Материалы и закупки</CardTitle>
               <p className="text-sm text-zinc-500 mt-1">Список материалов для объекта</p>
             </div>
-            <AddMaterialDialog projectId={project.id} />
+            <div className="w-full sm:w-auto">
+              <AddMaterialDialog projectId={project.id} />
+            </div>
           </CardHeader>
           <CardContent className="p-0 sm:p-6">
             <div className="overflow-x-auto">
@@ -395,12 +399,14 @@ export function ProjectDetails() {
 
       {activeTab === 'team' && (
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between border-b border-zinc-100 pb-4">
+          <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-zinc-100 pb-4">
             <div>
               <CardTitle>Команда проекта</CardTitle>
               <p className="text-sm text-zinc-500 mt-1">Определите сотрудников, которые работают на объекте, чтобы учитывать их зарплату</p>
             </div>
-            <AddWorkerDialog />
+            <div className="w-full sm:w-auto">
+              <AddWorkerDialog />
+            </div>
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

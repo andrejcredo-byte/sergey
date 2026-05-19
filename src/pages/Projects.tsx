@@ -16,9 +16,11 @@ export function Projects() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Объекты</h1>
-          <p className="text-sm text-zinc-500">Управление строительными проектами</p>
+          <p className="text-sm text-zinc-500 mt-1">Управление строительными проектами</p>
         </div>
-        <NewProjectDialog />
+        <div className="w-full sm:w-auto">
+          <NewProjectDialog />
+        </div>
       </div>
 
       {projects.length === 0 ? (

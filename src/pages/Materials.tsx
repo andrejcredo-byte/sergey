@@ -28,9 +28,11 @@ export function Materials() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Закупки и материалы</h1>
-          <p className="text-sm text-zinc-500">Контроль поставок на объекты</p>
+          <p className="text-sm text-zinc-500 mt-1">Контроль поставок на объекты</p>
         </div>
-        <AddMaterialDialog />
+        <div className="w-full sm:w-auto">
+          <AddMaterialDialog />
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center bg-white p-2 sm:p-3 rounded-xl border">

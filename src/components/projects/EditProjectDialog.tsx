@@ -60,7 +60,7 @@ export function EditProjectDialog({ project }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button variant="outline" size="sm" className="w-full sm:w-auto gap-2">
           <Edit className="h-4 w-4" /> Редактировать
         </Button>
       </DialogTrigger>
